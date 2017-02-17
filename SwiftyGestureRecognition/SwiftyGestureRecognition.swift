@@ -9,7 +9,7 @@
 import ObjectiveC
 import UIKit
 
-public typealias UIGestureRecognizerStateChangeBlock = ((gestureRecognizer: UIGestureRecognizer) -> Void)
+public typealias UIGestureRecognizerStateChangeBlock = ((_ gestureRecognizer: UIGestureRecognizer) -> Void)
 
 private class UIGestureRecognizerStateChangeBlockHost {
   
@@ -19,16 +19,16 @@ private class UIGestureRecognizerStateChangeBlockHost {
   
   init(gestureRecognizer: UIGestureRecognizer) {
     self.gestureRecognizer = gestureRecognizer
-    gestureRecognizer.addTarget(self, action: #selector(UIGestureRecognizerStateChangeBlockHost.gestureRecognizerStateChanged(_:)))
+    gestureRecognizer.addTarget(self, action: #selector(gestureRecognizerStateChanged))
   }
   
   deinit {
-    gestureRecognizer?.removeTarget(self, action: #selector(UIGestureRecognizerStateChangeBlockHost.gestureRecognizerStateChanged(_:)))
+    gestureRecognizer?.removeTarget(self, action: #selector(gestureRecognizerStateChanged))
   }
   
-  @objc private func gestureRecognizerStateChanged(gestureRecognizer: UIGestureRecognizer) {
+  @objc fileprivate func gestureRecognizerStateChanged(_ gestureRecognizer: UIGestureRecognizer) {
     if let stateChangeBlock = block[gestureRecognizer.state] {
-      stateChangeBlock(gestureRecognizer: gestureRecognizer)
+      stateChangeBlock(gestureRecognizer)
     }
   }
   
@@ -36,11 +36,11 @@ private class UIGestureRecognizerStateChangeBlockHost {
 
 public extension UIGestureRecognizer {
   
-  private struct AssociatedBlockHost {
+  fileprivate struct AssociatedBlockHost {
     static var blockHost = "blockHost"
   }
   
-  private var blockHost: UIGestureRecognizerStateChangeBlockHost {
+  fileprivate var blockHost: UIGestureRecognizerStateChangeBlockHost {
     get {
       if let blockHost = objc_getAssociatedObject(self, &AssociatedBlockHost.blockHost) as? UIGestureRecognizerStateChangeBlockHost {
         return blockHost
@@ -52,33 +52,33 @@ public extension UIGestureRecognizer {
     }
   }
   
-  convenience init(view: UIView?) {
+  convenience init(view: UIView) {
     self.init()
-    view?.addGestureRecognizer(self)
+    view.addGestureRecognizer(self)
   }
   
-  public func didBegin(didBegin: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
-    blockHost.block[.Began] = didBegin
+  public func didBegin(_ didBegin: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+    blockHost.block[.began] = didBegin
     return self
   }
   
-  public func didChange(didChange: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
-    blockHost.block[.Changed] = didChange
+  public func didChange(_ didChange: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+    blockHost.block[.changed] = didChange
     return self
   }
   
-  public func didEnd(didEnd: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
-    blockHost.block[.Ended] = didEnd
+  public func didEnd(_ didEnd: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+    blockHost.block[.ended] = didEnd
     return self
   }
   
-  public func didCancel(didCancel: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
-    blockHost.block[.Cancelled] = didCancel
+  public func didCancel(_ didCancel: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+    blockHost.block[.cancelled] = didCancel
     return self
   }
   
-  public func didFail(didFail: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
-    blockHost.block[.Failed] = didFail
+  public func didFail(_ didFail: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+    blockHost.block[.failed] = didFail
     return self
   }
   

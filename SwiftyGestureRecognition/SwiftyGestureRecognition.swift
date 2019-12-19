@@ -15,7 +15,7 @@ private class UIGestureRecognizerStateChangeBlockHost {
   
   weak var gestureRecognizer: UIGestureRecognizer?
   
-  var block: [UIGestureRecognizerState: UIGestureRecognizerStateChangeBlock] = [:]
+  var block: [UIGestureRecognizer.State: UIGestureRecognizerStateChangeBlock] = [:]
   
   init(gestureRecognizer: UIGestureRecognizer) {
     self.gestureRecognizer = gestureRecognizer
@@ -57,27 +57,27 @@ public extension UIGestureRecognizer {
     view.addGestureRecognizer(self)
   }
   
-  public func didBegin(_ didBegin: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+  func didBegin(_ didBegin: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
     blockHost.block[.began] = didBegin
     return self
   }
   
-  public func didChange(_ didChange: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+  func didChange(_ didChange: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
     blockHost.block[.changed] = didChange
     return self
   }
   
-  public func didEnd(_ didEnd: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+  func didEnd(_ didEnd: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
     blockHost.block[.ended] = didEnd
     return self
   }
   
-  public func didCancel(_ didCancel: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+  func didCancel(_ didCancel: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
     blockHost.block[.cancelled] = didCancel
     return self
   }
   
-  public func didFail(_ didFail: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
+  func didFail(_ didFail: UIGestureRecognizerStateChangeBlock?) -> UIGestureRecognizer {
     blockHost.block[.failed] = didFail
     return self
   }
